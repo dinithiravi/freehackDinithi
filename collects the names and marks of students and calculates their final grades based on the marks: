@@ -1,0 +1,45 @@
+import java.util.Scanner;
+
+public class StudentGradeCalculator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.print("Enter the number of students: ");
+        int numStudents = scanner.nextInt();
+        
+        String[] studentNames = new String[numStudents];
+        double[] studentMarks = new double[numStudents];
+        
+        for (int i = 0; i < numStudents; i++) {
+            scanner.nextLine();  // Consume the newline character
+            System.out.print("Enter the name of student " + (i + 1) + ": ");
+            studentNames[i] = scanner.nextLine();
+            
+            System.out.print("Enter the mark of student " + (i + 1) + ": ");
+studentMarks[i] = scanner.nextDouble();
+        }
+        
+        System.out.println("\nStudent Grades:");
+        
+        for (int i = 0; i < numStudents; i++) {
+            char grade = calculateGrade(studentMarks[i]);
+            System.out.println(studentNames[i] + ": " + grade);
+        }
+        
+        scanner.close();
+    }
+    
+    public static char calculateGrade(double mark) {
+        if (mark >= 90) {
+            return 'A';
+        } else if (mark >= 80) {
+            return 'B';
+        } else if (mark >= 70) {
+            return 'C';
+        } else if (mark >= 60) {
+            return 'D';
+        } else {
+            return 'F';
+        }
+    }
+}
