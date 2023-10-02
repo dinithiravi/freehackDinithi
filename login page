@@ -1,0 +1,118 @@
+import java.io.*;
+import java.util.*;
+
+class User {
+    private String username;
+    private String password;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+}
+
+public class LoginSystem {
+    private static final String DATABASE_FILE = "users.txt";
+    private static final List<User> users = new ArrayList<>();
+
+    public static void main(String[] args) {
+        loadUsers();
+
+        Scanner scanner = new Scanner(System.in);
+        boolean loggedIn = false;
+
+        while (!loggedIn) {
+            System.out.println("Welcome to the Login System");
+            System.out.println("1. Login");
+            System.out.println("2. Sign Up");
+            System.out.println("3. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    loggedIn = login(scanner);
+                    break;
+                case 2:
+                    signUp(scanner);
+                    break;
+                case 3:
+                    System.out.println("Exiting the program.");
+                    scanner.close();
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+
+        System.out.println("Login successful. Welcome!");
+    }
+
+    private static void loadUsers() {
+        try (Scanner fileScanner = new Scanner(new File(DATABASE_FILE))) {
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                String[] parts = line.split(",");
+                if (parts.length == 2) {
+                    users.add(new User(parts[0], parts[1]));
+                }
+            }
+        } catch (FileNotFoundException e) {
+            // Ignore if the file doesn't exist; it will be created when users sign up.
+        }
+    }
+
+    private static void saveUsers() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(DATABASE_FILE))) {
+            for (User user : users) {
+                writer.println(user.getUsername() + "," + user.getPassword());
+            }
+        } catch (IOException e) {
+            System.err.println("Error saving user data.");
+        }
+    }
+
+    private static boolean login(Scanner scanner) {
+        scanner.nextLine(); // Consume the newline character
+        System.out.print("Enter your username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter your password: ");
+        String password = scanner.nextLine();
+
+        for (User user : users) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+                return true;
+            }
+        }
+
+        System.out.println("Invalid username or password. Please try again.");
+        return false;
+    }
+
+    private static void signUp(Scanner scanner) {
+        scanner.nextLine(); // Consume the newline character
+        System.out.print("Enter a new username: ");
+        String newUsername = scanner.nextLine();
+
+        for (User user : users) {
+            if (user.getUsername().equals(newUsername)) {
+                System.out.println("Username already exists. Please choose a different one.");
+                return;
+            }
+        }
+
+        System.out.print("Enter a new password: ");
+        String newPassword = scanner.nextLine();
+        users.add(new User(newUsername, newPassword));
+        saveUsers();
+        System.out.println("Sign up successful. You can now log in.");
+    }
+}
