@@ -1,0 +1,99 @@
+import java.util.Random;
+import java.util.Scanner;
+
+public class PuzzleGame {
+    private static final int BOARD_SIZE = 3;
+    private static final int EMPTY_CELL = 0;
+    private static final int MAX_SHUFFLE_MOVES = 100;
+
+    private int[][] board;
+
+    public PuzzleGame() {
+        board = new int[BOARD_SIZE][BOARD_SIZE];
+        initializeBoard();
+    }
+
+    private void initializeBoard() {
+        int value = 1;
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int col = 0; col < BOARD_SIZE; col++) {
+                board[row][col] = value;
+                value++;
+            }
+        }
+        board[BOARD_SIZE - 1][BOARD_SIZE - 1] = EMPTY_CELL;
+    }
+
+    private void shuffleBoard() {
+        Random rand = new Random();
+        for (int i = 0; i < MAX_SHUFFLE_MOVES; i++) {
+            int randomMove = rand.nextInt(4); // 0: up, 1: down, 2: left, 3: right
+            move(randomMove);
+        }
+    }
+
+    private void move(int direction) {
+        // Implement logic to move tiles in the specified direction
+        // Update the board after a valid move
+    }
+
+    private void displayBoard() {
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int col = 0; col < BOARD_SIZE; col++) {
+                System.out.print(board[row][col] + "\t");
+            }
+            System.out.println();
+        }
+    }
+
+    public void play() {
+        shuffleBoard();
+        Scanner scanner = new Scanner(System.in);
+
+        while (!isSolved()) {
+            displayBoard();
+            System.out.print("Enter move (0: up, 1: down, 2: left, 3: right, -1: quit): ");
+            int move = scanner.nextInt();
+
+            if (move == -1) {
+                System.out.println("Game quit.");
+                break;
+            }
+
+            if (isValidMove(move)) {
+                move(move);
+            } else {
+                System.out.println("Invalid move. Try again.");
+            }
+        }
+
+        if (isSolved()) {
+            System.out.println("Congratulations! You've solved the puzzle!");
+        }
+
+        scanner.close();
+    }
+
+    private boolean isValidMove(int direction) {
+        // Implement logic to check if the move is valid
+        return true;
+    }
+
+    private boolean isSolved() {
+        int value = 1;
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int col = 0; col < BOARD_SIZE; col++) {
+                if (board[row][col] != value % (BOARD_SIZE * BOARD_SIZE)) {
+                    return false;
+                }
+                value++;
+            }
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        PuzzleGame game = new PuzzleGame();
+        game.play();
+    }
+}
